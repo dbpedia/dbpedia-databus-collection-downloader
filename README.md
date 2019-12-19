@@ -10,7 +10,10 @@ In order to retrieve the downloaded files on your local machine you should mount
 ## Docker Image
 
 You can find the docker image on Docker Hub [here]() or build it yourself by running
-```docker build -t databus-download-min .``` in the projects root directory.
+
+```docker build -t databus-download-min .``` 
+
+in the projects root directory.
 
 ## Lock File
 
