@@ -12,6 +12,11 @@ In order to retrieve the downloaded files on your local machine you should mount
 You can find the docker image on Docker Hub [here]() or build it yourself by running
 `docker build -t databus-download-min .` in the projects root directory.
 
+## Lock File
+
+In order to make this container interoperable with others, the process creates a `download.lck` file in the `TARGET_DIR` directory
+on startup and removes it once the download has finished.
+Other containers with access to the mounted folder can check if this file exists to wait for the download process to terminate.
 
 ## Example
 The `docker-compose.yml` in this repo shows a possible configuration for the download client.
@@ -29,9 +34,3 @@ services:
 ```
 
 This configuration will download the DBpedia Pre-Release-Dataset v.2019-08-30 into a `download` folder next to your `docker-compose.yml`
-
-## Lock File
-
-In order to make this container interoperable with others, the process creates a `download.lck` file in the `TARGET_DIR` directory
-on startup and removes it once the download has finished.
-Other containers with access to the mounted folder can check if this file exists to wait for the download process to terminate.
