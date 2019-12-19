@@ -1,8 +1,8 @@
-echo "Creating LOCK at ${SRC_VOLUME_DIR}"
-touch "${SRC_VOLUME_DIR}/download.lck"
+echo "Creating LOCK at ${TARGET_DIR}"
+touch "${TARGET_DIR}/download.lck"
 
 cd /client
-mvn exec:java -Dexec.mainClass="org.dbpedia.download.Client" -Dexec.args="-p ${SRC_VOLUME_DIR} -c ${COLLECTION_URI}"
+mvn exec:java -Dexec.mainClass="org.dbpedia.download.Client" -Dexec.args="-p ${TARGET_DIR} -c ${COLLECTION_URI}"
 
-echo "Removing LOCK at ${SRC_VOLUME_DIR}"
-rm "${SRC_VOLUME_DIR}/download.lck"
+echo "Removing LOCK at ${TARGET_DIR}"
+rm "${TARGET_DIR}/download.lck"
