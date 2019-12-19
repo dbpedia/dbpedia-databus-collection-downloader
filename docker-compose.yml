@@ -4,6 +4,6 @@ services:
     image: databus-download-min:latest
     environment:
       COLLECTION_URI: https://databus.dbpedia.org/jan/collections/lookup
-      DATAPATH: /root/data
+      TARGET_DIR: /root/data
     volumes:
       - ./download:/root/data
