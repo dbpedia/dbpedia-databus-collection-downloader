@@ -1,11 +1,8 @@
 package org.dbpedia.download;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -20,6 +17,15 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,7 +37,7 @@ public class Client
 {
 	private static String defaultTargetPath = "./data/";
 
-	private static String defaultCollection = "https://databus.dbpedia.org/collections/dbpedia/databus";
+	private static String defaultCollection = "https://databus.dbpedia.org/jan/collections/pre-release-de";
 
 	/**
 	 * Quick and dirty implementation of a download client, downloading the contents of a 
@@ -78,7 +84,7 @@ public class Client
 			System.out.println("Loading collection " + collection);
 			
 
-			String query = get(collection, "text/sparql");
+			String query = get("GET", collection, "text/sparql");
 			
 
 			System.out.println("Collections resolved to query:");
@@ -92,11 +98,12 @@ public class Client
 			
 			if(!isURLEncoded(query)) {
 				query = URLEncoder.encode(query, "UTF-8");
+				
 			}
 			
 			sparqlQuery += query;
 			
-			String queryResult = get(sparqlQuery, null);
+			String queryResult = query("https://databus.dbpedia.org/repo/sparql", query);
 			
 			ArrayList<String> files = new ArrayList<String>();
 			
@@ -140,6 +147,28 @@ public class Client
 
 	}
 
+	private static String query(String endpoint, String query) throws ParseException, IOException {
+		
+		HttpClient client = HttpClientBuilder.create().build();
+		
+		String body = "default-graph-uri=&format=application%2Fsparql-results%2Bjson&query=" + query;
+		
+		HttpEntity entity = new ByteArrayEntity(body.getBytes("UTF-8"));
+		
+		HttpPost request = new HttpPost(endpoint);
+		request.setEntity(entity);
+		request.setHeader("Content-type", "application/x-www-form-urlencoded");
+		// request.addHeader("Accept",  accept);
+		HttpResponse response = client.execute(request);
+		HttpEntity responseEntity = response.getEntity();
+		
+		if(responseEntity != null) {
+		    return EntityUtils.toString(responseEntity);
+		}
+		return null;
+
+	}
+
 	private static boolean isURLEncoded(String query) {
 		
 		Pattern hasWhites = Pattern.compile("\\s+");
@@ -149,45 +178,31 @@ public class Client
 		
 	}
 
-	private static String get(String urlString, String accept) throws IOException {
+	private static String get(String method, String urlString, String accept) throws IOException {
 
 
-		System.out.println("GET: " + urlString + " / ACCEPT: " + accept);
-		URL url = new URL(urlString);
-		HttpURLConnection con = (HttpURLConnection)url.openConnection();
-		con.setRequestMethod("GET");
+		System.out.println(method + ": " + urlString + " / ACCEPT: " + accept);
+			
+		HttpClient client = HttpClientBuilder.create().build();
 		
-		if(accept != null) {
-			con.setRequestProperty("Accept", accept);
+		if(method.equals("GET")) {
+
+			HttpGet request = new HttpGet(urlString);
+			request.addHeader("Accept",  accept);
+			HttpResponse response = client.execute(request);
+			HttpEntity responseEntity = response.getEntity();
+			
+			if(responseEntity != null) {
+			    return EntityUtils.toString(responseEntity);
+			}
 		}
 		
-		con.connect();
-
-		int status = con.getResponseCode();
-
-		if(status == HttpURLConnection.HTTP_OK) {
-
-			String content = readContent(con);
-			con.disconnect();
-			return content;
-		}
-		return null;	
+		
+		
+	
+		return null;
+		
 	}
 
-	private static String readContent(HttpURLConnection con) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
-			content.append("\n");
-		}
-
-		in.close();
-		
-		return content.toString();
-	}
 
 }

@@ -6,6 +6,6 @@ COPY ./client /client
 
 WORKDIR /client
 
-RUN mvn install
+RUN mvn package
 
 ENTRYPOINT /bin/bash download.sh
