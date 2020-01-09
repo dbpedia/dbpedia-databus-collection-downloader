@@ -2,8 +2,8 @@
 
 This is a light-weight dockerized implementation of a DBpedia Databus Download Client. Run the container with the following two 
 environment variables:
-* TARGET_DIR: The target directory for the downloaded files
-* COLLECTION_URI: A collection URI on the DBpedia Databus
+* `TARGET_DIR`: The target directory for the downloaded files
+* `COLLECTION_URI`: A collection URI on the DBpedia Databus
 
 In order to retrieve the downloaded files on your local machine you should mount a volume to the specified `TARGET_DIR`.
 
@@ -37,3 +37,5 @@ services:
 ```
 
 This configuration will download the DBpedia Pre-Release-Dataset v.2019-08-30 into a `download` folder next to your `docker-compose.yml`
+
+In order to access the files on your local machine you should mount a volume to the `TARGET_DIR` folder.
