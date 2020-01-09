@@ -37,3 +37,5 @@ services:
 ```
 
 This configuration will download the DBpedia Pre-Release-Dataset v.2019-08-30 into a `download` folder next to your `docker-compose.yml`
+
+In order to access the files on your local machine you should mount a volume to the `TARGET_DIR` folder.
