@@ -8,7 +8,7 @@ In order to retrieve the downloaded files on your local machine you should mount
 
 ## Docker Image
 
-You can find the docker image on Docker Hub [here]() or build it yourself by running
+You can find the docker image on Docker Hub [here](https://hub.docker.com/repository/docker/dbpedia/minimal-download-client) or build it yourself by running
 
 ```docker build -t databus-download-min .``` 
 
