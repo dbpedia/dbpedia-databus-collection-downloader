@@ -5,5 +5,6 @@ services:
     environment:
       COLLECTION_URI: https://databus.dbpedia.org/dbpedia/collections/pre-release-2019-08-30/
       TARGET_DIR: /root/data
+      GRAPH_MODE: download-url
     volumes:
       - ./download:/root/data
