@@ -18,6 +18,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -32,7 +33,7 @@ import org.json.JSONObject;
 
 
 
-public class Client 
+public class Client
 {
 	private static String defaultTargetPath = "./data/";
 
@@ -75,8 +76,17 @@ public class Client
 
 			if(cmd.hasOption("g")) {
 				String mode = cmd.getOptionValue("g"); //TODO add support for more modes
-                if (!mode.isEmpty())
-                    gmode = GraphMode.DOWNLOAD_URL;
+                switch (mode) {
+                    case "":
+                    case "no":
+                        gmode = GraphMode.NO_GRAPH;
+                        break;
+                    case "download-url":
+                        gmode = GraphMode.DOWNLOAD_URL;
+                        break;
+                    default:
+                        gmode = GraphMode.DOWNLOAD_URL;
+                }
 			}
 			
 			if(!targetPath.endsWith("/")) {
@@ -134,12 +144,17 @@ public class Client
 				System.out.println("Downloading file: " + file);
 				
 				String filename = file.substring(file.lastIndexOf('/') + 1);
+                String prefix = filename.substring(0,filename.indexOf('.'));
+                String suffixes = filename.substring(filename.indexOf('.'));
+                String hash = DigestUtils.md5Hex(file).toUpperCase().substring(0,4);
+                String uniqname = prefix+"_"+hash+suffixes;
 				
 				InputStream in = new URL(file).openStream();
-				Files.copy(in, Paths.get(targetPath + filename), StandardCopyOption.REPLACE_EXISTING);
-                Files.write(Paths.get(targetPath + filename + ".graph"), file.getBytes("UTF-8"));
+				Files.copy(in, Paths.get(targetPath + uniqname), StandardCopyOption.REPLACE_EXISTING);
+				if(gmode!=gmode.NO_GRAPH)
+                    Files.write(Paths.get(targetPath + uniqname + ".graph"), file.getBytes("UTF-8"));
 				
-				System.out.println("File saved to " + targetPath + filename);
+				System.out.println("File saved to " + targetPath + uniqname);
 			}
 			
 			System.out.println("Done.");
