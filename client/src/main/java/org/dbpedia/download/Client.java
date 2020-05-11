@@ -1,6 +1,7 @@
 package org.dbpedia.download;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -29,17 +30,17 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Hello world!
- *
- */
+
+
 public class Client 
 {
 	private static String defaultTargetPath = "./data/";
 
 	private static String defaultCollection = "https://databus.dbpedia.org/jan/collections/pre-release-de";
 
-	/**
+    public enum GraphMode  {NO_GRAPH, DOWNLOAD_URL}
+
+    /**
 	 * Quick and dirty implementation of a download client, downloading the contents of a 
 	 * Databus collection. Code is ugly and I know it! 
 	 * This download process will be replaced by the official databus download client as soon as it 
@@ -52,10 +53,12 @@ public class Client
 		Options options = new Options();
 		options.addOption("p", "path", true, "The data path");
 		options.addOption("c", "collection", true, "The config file path");
+		options.addOption("g", "graph-mode", true, "change the mode in which .graph files are created"); //TODO only one mode so far
 
 		String targetPath = defaultTargetPath;
 		String collection = defaultCollection;
 
+		GraphMode gmode = GraphMode.NO_GRAPH;
 		CommandLineParser cmdParser = new DefaultParser();
 
 		try {
@@ -68,6 +71,12 @@ public class Client
 
 			if(cmd.hasOption("c")) {
 				collection = cmd.getOptionValue("c");
+			}
+
+			if(cmd.hasOption("g")) {
+				String mode = cmd.getOptionValue("g"); //TODO add support for more modes
+                if (!mode.isEmpty())
+                    gmode = GraphMode.DOWNLOAD_URL;
 			}
 			
 			if(!targetPath.endsWith("/")) {
@@ -128,6 +137,7 @@ public class Client
 				
 				InputStream in = new URL(file).openStream();
 				Files.copy(in, Paths.get(targetPath + filename), StandardCopyOption.REPLACE_EXISTING);
+                Files.write(Paths.get(targetPath + filename + ".graph"), file.getBytes("UTF-8"));
 				
 				System.out.println("File saved to " + targetPath + filename);
 			}
@@ -206,3 +216,4 @@ public class Client
 
 
 }
+
