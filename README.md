@@ -16,7 +16,7 @@ in the projects root directory.
 
 ## Lock File
 
-In order to make this container interoperable with others, the process creates a `download.lck` file in the `TARGET_DIR` directory
+In order to make this container interoperable with others, the process creates a `download.lck` file in the `TARGET_DIR` (defaults to `/root/data/`) directory
 on startup and removes it once the download has finished.
 Other containers with access to the mounted folder can check if this file exists to wait for the download process to terminate.
 
@@ -26,11 +26,10 @@ The `docker-compose.yml` in this repo shows a possible configuration for the dow
 ```
 version: "3.0"
 services:
-  databus-download-min:
-    image: databus-download-min:latest
+  databus-download:
+    image: dbpedia/minimal-download-client:latest
     environment:
-      COLLECTION_URI: https://databus.dbpedia.org/dbpedia/collections/pre-release-2019-08-30/
-      TARGET_DIR: /root/data
+      COLLECTION_URI: https://databus.dbpedia.org/dbpedia/collections/latest-core
     volumes:
       - ./download:/root/data
 ```

@@ -57,7 +57,7 @@ public class Client
 		Options options = new Options();
 		options.addOption("p", "path", true, "The data path");
 		options.addOption("c", "collection", true, "The config file path");
-		options.addOption("g", "graph-mode", false, "change the mode in which .graph files are created"); //TODO only one mode so far
+		options.addOption("g", "graph-mode", true, "change the mode in which .graph files are created"); //TODO only one mode so far
 
 		String targetPath = defaultTargetPath;
 		String collection = defaultCollection;

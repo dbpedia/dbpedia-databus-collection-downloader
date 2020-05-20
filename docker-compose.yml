@@ -1,10 +1,8 @@
 version: "3.0"
 services:
   databus-download:
-    image: databus-download-min:latest
+    image: dbpedia/minimal-download-client:latest
     environment:
-      COLLECTION_URI: https://databus.dbpedia.org/dbpedia/collections/pre-release-2019-08-30/
-      TARGET_DIR: /root/data
-      GRAPH_MODE: download-url
+      COLLECTION_URI: https://databus.dbpedia.org/dbpedia/collections/latest-core
     volumes:
       - ./download:/root/data
