@@ -39,7 +39,10 @@ public class Client
 
 	private static String defaultCollection = "https://databus.dbpedia.org/jan/collections/pre-release-de";
 
-    public enum GraphMode  {NO_GRAPH, DOWNLOAD_URL}
+    public enum GraphMode  { 
+    	NO_GRAPH, 
+    	DOWNLOAD_URL
+	}
 
     /**
 	 * Quick and dirty implementation of a download client, downloading the contents of a 
@@ -54,7 +57,7 @@ public class Client
 		Options options = new Options();
 		options.addOption("p", "path", true, "The data path");
 		options.addOption("c", "collection", true, "The config file path");
-		options.addOption("g", "graph-mode", true, "change the mode in which .graph files are created"); //TODO only one mode so far
+		options.addOption("g", "graph-mode", false, "change the mode in which .graph files are created"); //TODO only one mode so far
 
 		String targetPath = defaultTargetPath;
 		String collection = defaultCollection;
@@ -76,6 +79,7 @@ public class Client
 
 			if(cmd.hasOption("g")) {
 				String mode = cmd.getOptionValue("g"); //TODO add support for more modes
+				
                 switch (mode) {
                     case "":
                     case "no":
@@ -109,18 +113,13 @@ public class Client
 			System.out.println("Collections resolved to query:");
 			System.out.println(query);
 			
-			String sparqlQuery = "https://databus.dbpedia.org/repo/sparql?default-graph-uri=&format=application%2Fsparql-results%2Bjson&query=";
-			
 			// depending on running system, daytime or weather condition, the query is either already URL encoded or still plain text
 			System.out.println("CHECKING FOR URLENCODED");
 			System.out.println("RESULT: " + isURLEncoded(query));
 			
 			if(!isURLEncoded(query)) {
 				query = URLEncoder.encode(query, "UTF-8");
-				
 			}
-			
-			sparqlQuery += query;
 			
 			String queryResult = query("https://databus.dbpedia.org/repo/sparql", query);
 			
@@ -147,12 +146,15 @@ public class Client
                 String prefix = filename.substring(0,filename.indexOf('.'));
                 String suffixes = filename.substring(filename.indexOf('.'));
                 String hash = DigestUtils.md5Hex(file).toUpperCase().substring(0,4);
-                String uniqname = prefix+"_"+hash+suffixes;
+                String uniqname = prefix + "_" + hash + suffixes;
 				
 				InputStream in = new URL(file).openStream();
 				Files.copy(in, Paths.get(targetPath + uniqname), StandardCopyOption.REPLACE_EXISTING);
-				if(gmode!=gmode.NO_GRAPH)
+				in.close();
+				
+				if(gmode != GraphMode.NO_GRAPH) {
                     Files.write(Paths.get(targetPath + uniqname + ".graph"), file.getBytes("UTF-8"));
+				}
 				
 				System.out.println("File saved to " + targetPath + uniqname);
 			}
@@ -205,7 +207,6 @@ public class Client
 
 	private static String get(String method, String urlString, String accept) throws IOException {
 
-
 		System.out.println(method + ": " + urlString + " / ACCEPT: " + accept);
 			
 		HttpClient client = HttpClientBuilder.create().build();
@@ -221,9 +222,6 @@ public class Client
 			    return EntityUtils.toString(responseEntity);
 			}
 		}
-		
-		
-		
 	
 		return null;
 		
