@@ -1,6 +1,6 @@
-# Minimal Download Client
+# DBpedia Databus Collection Downloader
 
-This is a light-weight dockerized data-downloader for the DBpedia Databus. This container takes a collection URI and simply pulls its data to a local directory. It does not support any format or compression conversion. If your application requires data in a format that is not available on the Databus, please use the full DBpedia Download Client. Run the container with the following two environment variables:
+This is a light-weight dockerized data-downloader for the DBpedia Databus. This container takes a collection URI and pulls its data to a local directory. It does not support any format or compression conversion. If your application requires data in a format that is not available on the Databus, please use the full DBpedia Download Client. Run the container with the following two environment variables:
 * `TARGET_DIR`: The target directory for the downloaded files
 * `COLLECTION_URI`: A collection URI on the DBpedia Databus
 
@@ -8,7 +8,7 @@ In order to retrieve the downloaded files on your local machine you should mount
 
 ## Docker Image
 
-You can find the docker image on Docker Hub [here](https://hub.docker.com/repository/docker/dbpedia/minimal-download-client) or build it yourself by running
+You can find the docker image on Docker Hub [here](https://hub.docker.com/repository/docker/dbpedia/dbpedia-databus-collection-downloader) or build it yourself by running
 
 ```docker build -t databus-download-min .``` 
 
@@ -27,13 +27,18 @@ The `docker-compose.yml` in this repo shows a possible configuration for the dow
 version: "3.0"
 services:
   databus-download:
-    image: dbpedia/minimal-download-client:latest
+    image: dbpedia/dbpedia-databus-collection-downloader:latest
     environment:
       COLLECTION_URI: https://databus.dbpedia.org/dbpedia/collections/latest-core
+      TARGET_DIR: /root/data
     volumes:
       - ./download:/root/data
 ```
 
-This configuration will download the DBpedia Pre-Release-Dataset v.2019-08-30 into a `download` folder next to your `docker-compose.yml`
-
+This configuration will download the DBpedia Latest Core release into a `./download` folder next to your `docker-compose.yml`
 In order to access the files on your local machine you should mount a volume to the `TARGET_DIR` folder.
+
+Start the download by running
+```
+docker-compose up
+```
