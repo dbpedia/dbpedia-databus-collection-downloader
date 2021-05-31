@@ -1,9 +1,6 @@
 package org.dbpedia.download;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -27,6 +24,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +35,7 @@ public class Client
 {
 	private static String defaultTargetPath = "./data/";
 
-	private static String defaultCollection = "https://databus.dbpedia.org/jan/collections/pre-release-de";
+	private static String defaultCollection = "https://databus.dbpedia.org/dbpedia/collections/latest-core";
 
     public enum GraphMode  { 
     	NO_GRAPH, 
@@ -56,7 +54,7 @@ public class Client
 		
 		Options options = new Options();
 		options.addOption("p", "path", true, "The data path");
-		options.addOption("c", "collection", true, "The config file path");
+		options.addOption("c", "collection", true, "The Databus collection to be downloaded");
 		options.addOption("g", "graph-mode", true, "change the mode in which .graph files are created"); //TODO only one mode so far
 
 		String targetPath = defaultTargetPath;
@@ -147,10 +145,10 @@ public class Client
                 String suffixes = filename.substring(filename.indexOf('.'));
                 String hash = DigestUtils.md5Hex(file).toUpperCase().substring(0,4);
                 String uniqname = prefix + "_" + hash + suffixes;
-				
-				InputStream in = new URL(file).openStream();
-				Files.copy(in, Paths.get(targetPath + uniqname), StandardCopyOption.REPLACE_EXISTING);
-				in.close();
+
+                HttpClient instance = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
+                HttpResponse response = instance.execute(new HttpGet(file));
+                response.getEntity().writeTo(new FileOutputStream(Paths.get(targetPath + uniqname).toFile(),false));
 				
 				if(gmode != GraphMode.NO_GRAPH) {
                     Files.write(Paths.get(targetPath + uniqname + ".graph"), file.getBytes("UTF-8"));
