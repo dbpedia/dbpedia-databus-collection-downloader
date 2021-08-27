@@ -150,7 +150,7 @@ public class Client
 				
 				String filename = file.substring(file.lastIndexOf('/') + 1);
 				
-				String prefix = fileName;
+				String prefix = filename;
 				String suffixes = "";
 				
 				if(filename.contains(".")) {
