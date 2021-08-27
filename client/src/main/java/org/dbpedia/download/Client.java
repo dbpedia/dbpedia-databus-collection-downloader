@@ -36,6 +36,8 @@ public class Client
 	private static String defaultTargetPath = "./data/";
 
 	private static String defaultCollection = "https://databus.dbpedia.org/dbpedia/collections/latest-core";
+	
+	private static String defaultSparqlEndpoint = "https://databus.dbpedia.org/repo/sparql";
 
     public enum GraphMode  { 
     	NO_GRAPH, 
@@ -56,9 +58,11 @@ public class Client
 		options.addOption("p", "path", true, "The data path");
 		options.addOption("c", "collection", true, "The Databus collection to be downloaded");
 		options.addOption("g", "graph-mode", true, "change the mode in which .graph files are created"); //TODO only one mode so far
+		options.addOption("s", "sparql-endpoint", true, "the target sparql endpoint"); //TODO only one mode so far
 
 		String targetPath = defaultTargetPath;
 		String collection = defaultCollection;
+		String sparqlEndpoint = defaultSparqlEndpoint;
 
 		GraphMode gmode = GraphMode.NO_GRAPH;
 		CommandLineParser cmdParser = new DefaultParser();
@@ -74,6 +78,10 @@ public class Client
 			if(cmd.hasOption("c")) {
 				collection = cmd.getOptionValue("c");
 			}
+			
+			if(cmd.hasOption("s")) {
+				sparqlEndpoint = cmd.getOptionValue("s");
+			}	
 
 			if(cmd.hasOption("g")) {
 				String mode = cmd.getOptionValue("g"); //TODO add support for more modes
@@ -119,7 +127,7 @@ public class Client
 				query = URLEncoder.encode(query, "UTF-8");
 			}
 			
-			String queryResult = query("https://databus.dbpedia.org/repo/sparql", query);
+			String queryResult = query(sparqlEndpoint, query);
 			
 			ArrayList<String> files = new ArrayList<String>();
 			
