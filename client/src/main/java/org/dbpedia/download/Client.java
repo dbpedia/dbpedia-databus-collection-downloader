@@ -149,8 +149,16 @@ public class Client
 				System.out.println("Downloading file: " + file);
 				
 				String filename = file.substring(file.lastIndexOf('/') + 1);
-                String prefix = filename.substring(0,filename.indexOf('.'));
-                String suffixes = filename.substring(filename.indexOf('.'));
+				
+				String prefix = fileName;
+				String suffixes = "";
+				
+				if(filename.contains(".")) {
+			      		prefix = filename.substring(0,filename.indexOf('.'));
+					suffixes = filename.substring(filename.indexOf('.'));
+				}
+				
+          
                 String hash = DigestUtils.md5Hex(file).toUpperCase().substring(0,4);
                 String uniqname = prefix + "_" + hash + suffixes;
 
