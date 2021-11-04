@@ -23,7 +23,7 @@ on startup and removes it once the download has finished.
 Other containers with access to the mounted folder can check if this file exists to wait for the download process to terminate.
 
 ## Example
-The `docker-compose.yml` in this repo shows a possible configuration for the download client.
+The `docker-compose.yml` in this repo shows an example configuration.
 
 ```
 version: "3.0"
