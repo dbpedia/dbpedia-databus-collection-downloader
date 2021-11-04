@@ -1,6 +1,8 @@
 # DBpedia Databus Collection Downloader
 
-This is a light-weight dockerized data-downloader for the DBpedia Databus. This container takes a collection URI and pulls its data to a local directory. It does not support any format or compression conversion. If your application requires data in a format that is not available on the Databus, please use the full DBpedia Download Client. Run the container with the following two environment variables:
+This is a light-weight dockerized data-downloader for the DBpedia Databus. This container takes a collection URI and pulls its data to a local directory. It does not support any format or compression conversion. If your application requires conversion, please check the [Databus Client](https://github.com/dbpedia/databus-client). 
+
+Run the container with the following two environment variables:
 * `TARGET_DIR`: The target directory for the downloaded files
 * `COLLECTION_URI`: A collection URI on the DBpedia Databus
 
