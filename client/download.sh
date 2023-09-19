@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 if [ -z ${GRAPH_MODE+x} ]; then GRAPH_MODE='no'; fi
 if [ -z ${TARGET_DIR+x} ]; then TARGET_DIR='/root/data'; fi
-if [ -z ${SPARQL_ENDPOINT+x} ]; then SPARQL_ENDPOINT='https://databus.dbpedia.org/repo/sparql'; fi
+if [ -z ${SPARQL_ENDPOINT+x} ]; then SPARQL_ENDPOINT='https://databus.dbpedia.org/sparql'; fi
 
 echo "Creating LOCK at ${TARGET_DIR}"
 touch "${TARGET_DIR}/download.lck"

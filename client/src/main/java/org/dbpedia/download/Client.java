@@ -37,7 +37,7 @@ public class Client
 
 	private static String defaultCollection = "https://databus.dbpedia.org/dbpedia/collections/latest-core";
 	
-	private static String defaultSparqlEndpoint = "https://databus.dbpedia.org/repo/sparql";
+	private static String defaultSparqlEndpoint = "https://databus.dbpedia.org/sparql";
 
     public enum GraphMode  { 
     	NO_GRAPH, 
